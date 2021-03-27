@@ -1,20 +1,26 @@
 from IPython.display import Latex
 import operator
 
-def LMatrix(mat, name=None, hidden=False):
-    s = ''
+def LMatrix(mat, name=None, hidden=False, wrapper=''):
+    s = wrapper + ' '
     if name is not None and not hidden:
         s += '{} = '.format(name)
-    s += r'\begin{pmatrix}'
+    s += r'\begin{bmatrix}'
     for r in mat:
         for e in r:
             s += r' {} &'.format(e)
         s = s[:-2] + r' \\'
-    s = s[:-2] + r'\end{pmatrix}'
+    s = s[:-2] + r'\end{bmatrix} ' + wrapper
     if name is not None:
         globals()[name] = Matrix(mat)
     return s
 
+def LVector(vec, name=None, *args, **kwargs):
+    s = LMatrix([(e,) for e in vec], name, *args, **kwargs) 
+    if name is not None:
+        globals()[name] = vector(vec)
+    return s
+    
 def LScalarMul(mat, scalar, name=None):
     product = scalar*Matrix(mat)
     s = ''
@@ -22,12 +28,12 @@ def LScalarMul(mat, scalar, name=None):
         s += '{} = '.format(name)
     s += r'{} \cdot '.format(scalar)
     s += LMatrix(mat).data
-    s += r' = \begin{pmatrix}'
+    s += r' = \begin{bmatrix}'
     for r in mat:
         for e in r:
             s += r' {} \cdot {} &'.format(scalar, e)
         s = s[:-2] + r' \\'
-    s = s[:-2] + r'\end{pmatrix} = ' + LMatrix(product).data 
+    s = s[:-2] + r'\end{bmatrix} = ' + LMatrix(product).data 
     if name is not None:
         globals()[name] = product
     
