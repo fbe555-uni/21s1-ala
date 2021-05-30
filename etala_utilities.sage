@@ -157,7 +157,7 @@ def _can_convert_to_ZZ(value):
     except TypeError:
         return False
 
-def show_var(*names):
+def show_var(*names, approx=True, debug=False):
     if len(names) == 0:
         # First extract the line of source code where this was called
         source = traceback.extract_stack(limit=2)[0].line
@@ -169,16 +169,18 @@ def show_var(*names):
     for name in names:
         value = globals()[name]
         expr = LatexExpr(f'\\text{{{name}}} = ') + latex(value)
-        try:
-            approx = n(value, digits=3)
-            if value != approx:
-                expr += LatexExpr(f'\\sim') + latex(approx)
-            elif parent(value) is QQ and not _can_convert_to_ZZ(value):
-                expr += LatexExpr(f'= {RR(approx).str(truncate=True, skip_zeroes=True)}')
-            elif value.base_ring() is QQ and not _can_convert_to_ZZ(value):
-                expr += LatexExpr('=') + latex(approx)
-        except Exception as e:
-            print(e)
+        if approx:
+            try:
+                approx = n(value, digits=3)
+                if value != approx:
+                    expr += LatexExpr(f'\\sim') + latex(approx)
+                elif parent(value) is QQ and not _can_convert_to_ZZ(value):
+                    expr += LatexExpr(f'= {RR(approx).str(truncate=True, skip_zeroes=True)}')
+                elif value.base_ring() is QQ and not _can_convert_to_ZZ(value):
+                    expr += LatexExpr('=') + latex(approx)
+            except Exception as e:
+                if debug:
+                    traceback.print_exc()
         show(expr)
 
         
