@@ -7,6 +7,7 @@ import numpy as np
 
 latex.extra_preamble('')
 latex.add_macro(r'\def\bs#1{{\boldsymbol #1}}')
+latex.matrix_delimiters("[", "]")
 
 
 def LMatrix(mat, name=None, hidden=False, wrapper='', **kwargs):
