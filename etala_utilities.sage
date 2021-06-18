@@ -264,3 +264,7 @@ def draw_table(data,
             s += r'\hline '
     s += r'\end{array}'
     return s
+    
+    
+def multiply_piecewise(input_pw, input_regular):
+    return piecewise([(rang, func*input_regular) for rang, func in input_pw.items()])
